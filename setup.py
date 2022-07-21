@@ -5,7 +5,7 @@ from pathlib import Path
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
-VERSION = '0.0.4'
+VERSION = '0.0.5'
 DESCRIPTION = 'Library for easy connection to rabbitmq  with pika Library'
 
 # Setting up
@@ -19,7 +19,7 @@ setup(
     install_requires=['pika'],
     long_description=long_description,
     long_description_content_type='text/markdown',
-    keywords=['python', 'pika', 'amqp', 'rabbitmq', 'iot', 'easy'],
+    keywords=['python', 'pika', 'amqp', 'rabbitmq', 'iot', 'easy',"easy pika io"],
     classifiers=[
         "Development Status :: 1 - Planning",
         "Intended Audience :: Developers",

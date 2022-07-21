@@ -121,7 +121,7 @@ class PkConnection():
         self.qu_future=future
         self.on_message=on_message
         self.queue_name=queue_name
-
+        
         self._channel.queue_declare(queue_name)
         if 0<len(routing_keyes):
             for rout in routing_keyes:
@@ -152,7 +152,7 @@ class PkConnection():
         logging.info(onuse,"consumer cancel")
     def on_basic_consume_ok(self,unused):
         self.qu_future.set_result(self._channel)
-    async def publish(self,routing_key,data,headers):
+    def publish(self,routing_key,data,headers=None):
         self._channel.basic_publish(exchange=self.exchange_name, routing_key=routing_key, body=data,properties=pika.BasicProperties(
                           headers=headers# Add a key/value header
                       ),
@@ -194,9 +194,8 @@ class PikaMassenger():
         loop = asyncio.new_event_loop()
         foo = loop.run_until_complete(self.create_consume(queue_name, routing_keys,callback))
         self.connection._connection.ioloop.run_forever()
-    async def send_message(self,routing_key,data):
-        await self.connect()
-        await self.connection.publish(routing_key,data)
+    def send_message(self,routing_key,data):
+        self.connection.publish(routing_key,data)
 
 
 
