@@ -4,7 +4,7 @@ import pika
 from pika.adapters.asyncio_connection import AsyncioConnection
 import asyncio
 import logging
-
+import functools
 logging.basicConfig(format='%(filename)s-%(process)d-%(levelname)s ->:%(message)s-')
 
 
@@ -109,7 +109,7 @@ class PkConnection():
     
 
     def setup_exchange(self):
-        self._channel.exchange_declare(exchange=self.exchange_name, exchange_type=self.exchange_type,callback=self.on_exchange_declared)
+        self._channel.exchange_declare(exchange=self.exchange_name, exchange_type=self.exchange_type,callback=self.on_exchange_declared,durable=True)
         
     def on_exchange_declared(self, _unused_frame):
         self.isExchangeDecleard=True
@@ -121,6 +121,7 @@ class PkConnection():
         self.qu_future=future
         self.on_message=on_message
         self.queue_name=queue_name
+
         self._channel.queue_declare(queue_name)
         if 0<len(routing_keyes):
             for rout in routing_keyes:
@@ -142,11 +143,11 @@ class PkConnection():
         
 
     def on_bind_queue_ok(self):
-        self._channel.basic_qos(prefetch_count=1,callback=self.on_basic_qos_ok)
+        self._channel.basic_qos(prefetch_count=0,callback=self.on_basic_qos_ok)
 
     def on_basic_qos_ok(self,unused):
         self._channel.add_on_cancel_callback(self.on_consumer_cancel)
-        self._channel.basic_consume(self.queue_name,self.on_message,callback=self.on_basic_consume_ok)
+        self._channel.basic_consume(self.queue_name,self.on_message,auto_ack=False,callback=self.on_basic_consume_ok)
     def on_consumer_cancel(self,onuse):
         logging.info(onuse,"consumer cancel")
     def on_basic_consume_ok(self,unused):
