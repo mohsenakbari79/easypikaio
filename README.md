@@ -2,7 +2,7 @@
 
 # EasyPikaIot
 
-Library for easy amqp communication via pika lirmbrary
+Library for easy amqp communication via pika library
 
 ## Installation
 
